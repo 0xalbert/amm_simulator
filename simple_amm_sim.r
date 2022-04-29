@@ -11,7 +11,7 @@ x = 60000   # Initial DAI liquidity
 y = 20      # Initial ETH liquidity
 k = x * y   # k as per Uniswap formula
 P = x / y   # Initial price of y in terms of x
-n = 500     # Number of trades simulated
+n = 5000     # Number of trades simulated
 xReq = 0;   # Computed x
 
 # Initial state as vector of x, y, k and price
@@ -30,7 +30,6 @@ getX <- function(k,y,P) {
   x = numerator / denominator
 }
 
-# Create the loop with r and c to iterate over the matrix
 # Simulates trades
 for (r in 1:nrow(mat))   
   for (c in 1:ncol(mat))
@@ -52,15 +51,20 @@ V0 = (x * 1) + (y * randomPrices[n])
 # Actual value of position at the end of the simulation
 V1 = (mat[n, 1] * 1) + (mat[n, 2] * randomPrices[n]) 
 
-print(V0)
-print(V1)
-
+# IL as delta in portfolio value
 IL = (V0 - V1)
 
 # IL as percentage loss
 IL = (IL / V0) * 100
 
+# Get min and max price 
+minPrice = randomPrices[which.min(randomPrices)]
+maxPrice = randomPrices[which.max(randomPrices)]
+
 # Print impermanent loss
+glue::glue("Simulation ran over {n} cycles")
+glue::glue("Min price {minPrice} max price {maxPrice}")
+glue::glue("Current DAI balance {mat[n, 1]} ETH balance {mat[n, 2]}")
 glue::glue("Impermanent loss is {IL} %")
 
 #print(mat)
