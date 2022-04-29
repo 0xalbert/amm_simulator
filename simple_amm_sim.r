@@ -11,7 +11,7 @@ x = 60000   # Initial DAI liquidity
 y = 20      # Initial ETH liquidity
 k = x * y   # k as per Uniswap formula
 P = x / y   # Initial price of y in terms of x
-n = 5000     # Number of trades simulated
+n = 5000    # Number of trades simulated
 xReq = 0;   # Computed x
 
 # Initial state as vector of x, y, k and price
@@ -30,7 +30,8 @@ getX <- function(k,y,P) {
   x = numerator / denominator
 }
 
-# Simulates trades
+fees = 0
+# Simulate trades
 for (r in 1:nrow(mat))   
   for (c in 1:ncol(mat))
   # Skip the first line as it is the initial state
@@ -42,7 +43,20 @@ for (r in 1:nrow(mat))
         mat[r, 2] = xReq
         mat[r, 3] = xReq * mat[r-1, 3] / xReq
         mat[r, 4] = randomPrices[r]
+        # Fees calculated in terms of x
+        fees = fees + (xReq * 0.003); 
       }
+
+# Pool balances
+deltaDai = (mat[n, 1] + fees) - x
+if (x > (mat[n, 1] + fees)) {
+  deltaDai = x - (mat[n, 1] + fees)
+}
+
+deltaEth = mat[n, 2] - y
+if (y > mat[n, 2]) {
+  deltaEth = -1 * (y - mat[n, 2])
+}
 
 # Impermanent loss calculation
 # Value of initial position at the end of the simulation
@@ -62,10 +76,13 @@ minPrice = randomPrices[which.min(randomPrices)]
 maxPrice = randomPrices[which.max(randomPrices)]
 
 # Print impermanent loss
-glue::glue("Simulation ran over {n} cycles")
-glue::glue("Min price {minPrice} max price {maxPrice}")
+glue::glue("Simulation ran over {n} trades\n\n")
+glue::glue("Min price {minPrice} max price {maxPrice} last price {randomPrices[n]}")
 glue::glue("Current DAI balance {mat[n, 1]} ETH balance {mat[n, 2]}")
+glue::glue("DAI delta {deltaDai} ETH delta {deltaEth} ")
 glue::glue("Impermanent loss is {IL} %")
+glue::glue("Fees accrued are {fees} DAI")
+
 
 #print(mat)
 
