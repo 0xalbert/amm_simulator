@@ -10,7 +10,7 @@ Glue [CRAN](https://cran.r-project.org/web/packages/glue/index.html)
 
 # Setup
 
-Linux only. To install R on windows see the instructions above.
+The setup script will work only on Linux. To install R on Windows see the instructions above.
 
 ``` npm run install ``` 
 
