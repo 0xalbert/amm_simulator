@@ -8,18 +8,12 @@ R - [How to install R on Windows and Linux](https://techvidvan.com/tutorials/ins
 
 Glue [CRAN](https://cran.r-project.org/web/packages/glue/index.html)
 
-Run:
+# Examples
 
-``` npm start ```
+To run a ETH/DAI pool simulation:
 
-Sample output:
+``` npm run start_a "number_of_trades" ```
 
-```` 
-Simulation ran over 5000 trades
+To run a SNX/ETH pool simulation:
 
-Min price 3000.40897191502 max price 3999.82489785179 last price 3227.34387475066
-Current DAI balance 61866.2385014222 ETH balance 19.3966859642261
-DAI delta 2987.03930376112 ETH delta -0.60331403577392 
-Impermanent loss is 0.0649260407889768 %
-Fees accrued are 1120.80080233887 DAI
-````
+``` npm run start_b "number_of_trades" ```
