@@ -17,15 +17,15 @@ yReq = 0;       # Computed y required to meet k
 minP = 260     # Default minimum price
 maxP = 390     # Default maximum price
 volumeSNX = 0   # Volume of DAI traded
+plot = 0;
 
-if (length(args)==0) {
-  stop("At least one argument must be supplied (number of trades)", call.=FALSE)
-} else if (length(args)==1) {
+if (length(args)==1) {
   n = strtoi(args[1], base = 0L)
-} else if (length(args)==3) {
+} else if (length(args)==4) {
   n = strtoi(args[1], base = 0L)
   minP = strtoi(args[2], base = 0L)
   maxP = strtoi(args[3], base = 0L)
+  plot = strtoi(args[4], base = 0L)
 } 
 
 # Initial state as vector of x, y, k and price
@@ -75,7 +75,7 @@ for (r in 1:nrow(mat))
         } else {
           volumeSNX = -1 * (mat[r, 1] - mat[r-1, 1]) 
         }
-        print(glue::glue("Previous bal {mat[r-1, 1]} new bal {mat[r, 1]} volume {volumeSNX}"))
+        #print(glue::glue("Previous bal {mat[r-1, 1]} new bal {mat[r, 1]} volume {volumeSNX}"))
         # Fees calculated in terms of x
         fees = fees + (volumeSNX * 0.003); 
         # Total volume
@@ -113,11 +113,12 @@ minPrice = randomPricesA[which.min(randomPricesA)]
 maxPrice = randomPricesA[which.max(randomPricesA)]
 
 # Print impermanent loss
+
 glue::glue("\n\nSimulation ran over {n} trades\n\n")
-glue::glue("ETH/SNX min {minPrice} max  {maxPrice} last {randomPricesA[n]}")
 glue::glue("Initial balances: {mat[1, 1]} SNX and {mat[1, 2]} ETH")
 glue::glue("Current  balances: {mat[n, 1]} SNX and {mat[n, 2]} ETH")
 glue::glue("SNX delta {deltaSnx} ETH delta {deltaEth} ")
+glue::glue("ETH/SNX min {minPrice} max  {maxPrice} last {randomPricesA[n]}")
 glue::glue("Impermanent loss is {IL} %")
 glue::glue("Fees accrued are {fees} SNX (${fees*randomPricesB[n]})")
 glue::glue("Total volume {totalVolume} SNX (${totalVolume * randomPricesB[n]})\n\n")
@@ -125,15 +126,17 @@ glue::glue("Total volume {totalVolume} SNX (${totalVolume * randomPricesB[n]})\n
 timeSeries = ts(data = randomPricesA, start = 1, end = n, frequency = 1,  deltat = 1, names = )
 matplot(timeSeries, type = "l")
 
-# Plot results
-XY <- data.frame(mat)
+if (plot) {
+  # Plot results
+  XY <- data.frame(mat)
 
-matplot(XY[,c(1)], XY[,c(4)], type = "p", lty = 1, col = c("red", "green"), pch = 1,
+  matplot(XY[,c(1)], XY[,c(4)], type = "p", lty = 1, col = c("red", "green"), pch = 1,
         xlab = "DAI in pool", ylab = "ETH price")
 
-matplot(XY[,c(2)], XY[,c(4)], type = "p", lty = 1, col = c("red", "green"), pch = 1,
+  matplot(XY[,c(2)], XY[,c(4)], type = "p", lty = 1, col = c("red", "green"), pch = 1,
         xlab = "ETH in pool", ylab = "ETH price")
 
+}
     
 
        

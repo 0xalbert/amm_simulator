@@ -17,15 +17,15 @@ yReq = 0;       # Computed y required to meet k
 minP = 3000     # Default minimum price
 maxP = 4000     # Default maximum price
 volumeDAI = 0   # Volume of DAI traded
+plot = FALSE
 
-if (length(args)==0) {
-  stop("At least one argument must be supplied (number of trades)", call.=FALSE)
-} else if (length(args)==1) {
+if (length(args)==1) {
   n = strtoi(args[1], base = 0L)
-} else if (length(args)==3) {
+} else if (length(args)==4) {
   n = strtoi(args[1], base = 0L)
   minP = strtoi(args[2], base = 0L)
   maxP = strtoi(args[3], base = 0L)
+  plot = strtoi(args[4], base = 0L)
 } 
 
 # Initial state as vector of x, y, k and price
@@ -65,7 +65,7 @@ for (r in 1:nrow(mat))
         } else {
           volumeDAI = -1 * (mat[r, 1] - mat[r-1, 1]) 
         }
-        print(glue::glue("Previous bal {mat[r-1, 1]} new bal {mat[r, 1]} volume {volumeDAI}"))
+        #print(glue::glue("Previous bal {mat[r-1, 1]} new bal {mat[r, 1]} volume {volumeDAI}"))
         # Fees calculated in terms of x
         fees = fees + (volumeDAI * 0.003); 
         # Total volume
@@ -104,8 +104,9 @@ maxPrice = randomPrices[which.max(randomPrices)]
 
 # Print impermanent loss
 glue::glue("\n\nSimulation ran over {n} trades\n\n")
-glue::glue("Min price {minPrice} max price {maxPrice} last price {randomPrices[n]}")
+
 glue::glue("Current DAI balance {mat[n, 1]} ETH balance {mat[n, 2]}")
+glue::glue("Min price {minPrice} max price {maxPrice} last price {randomPrices[n]}")
 glue::glue("DAI delta {deltaDai} ETH delta {deltaEth} ")
 glue::glue("Impermanent loss is {IL} %")
 glue::glue("Fees accrued are {fees} DAI total volume {totalVolume}\n\n")
@@ -113,14 +114,17 @@ glue::glue("Fees accrued are {fees} DAI total volume {totalVolume}\n\n")
 timeSeries = ts(data = randomPrices, start = 1, end = n, frequency = 1,  deltat = 1, names = )
 matplot(timeSeries, type = "l")
 
-# Plot results
-XY <- data.frame(mat)
+if (plot) {
+  # Plot results
+  XY <- data.frame(mat)
 
-matplot(XY[,c(1)], XY[,c(4)], type = "p", lty = 1, col = c("red", "green"), pch = 1,
-        xlab = "DAI in pool", ylab = "ETH price")
+  matplot(XY[,c(1)], XY[,c(4)], type = "p", lty = 1, col = c("red", "green"), pch = 1,
+          xlab = "DAI in pool", ylab = "ETH price")
 
-matplot(XY[,c(2)], XY[,c(4)], type = "p", lty = 1, col = c("red", "green"), pch = 1,
-        xlab = "ETH in pool", ylab = "ETH price")
+  matplot(XY[,c(2)], XY[,c(4)], type = "p", lty = 1, col = c("red", "green"), pch = 1,
+          xlab = "ETH in pool", ylab = "ETH price")
+}
+
 
     
 
