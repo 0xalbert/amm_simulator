@@ -1,5 +1,6 @@
 #!/usr/bin/env Rscript
 library(glue)
+args = commandArgs(trailingOnly=TRUE)
 
 # Simulator of constant product AMM (Uniswap V1/V2) 
 # Formulas: 
@@ -7,27 +8,40 @@ library(glue)
 # Original whitepaper https://hackmd.io/@HaydenAdams/HJ9jLsfTz
 
 # Initial system variables
-x = 60000   # Initial DAI liquidity
-y = 20      # Initial ETH liquidity
-k = x * y   # k as per Uniswap formula
-P = x / y   # Initial price of y in terms of x
-n = 5000    # Number of trades simulated
-xReq = 0;   # Computed x
+x = 60000       # Initial DAI liquidity
+y = 20          # Initial ETH liquidity
+k = x * y       # k as per Uniswap formula
+P = x / y       # Initial price of y in terms of x
+n = 5000        # Number of trades simulated
+yReq = 0;       # Computed y required to meet k
+minP = 3000     # Default minimum price
+maxP = 4000     # Default maximum price
+volumeDAI = 0   # Volume of DAI traded
+
+if (length(args)==0) {
+  stop("At least one argument must be supplied (number of trades)", call.=FALSE)
+} else if (length(args)==1) {
+  n = strtoi(args[1], base = 0L)
+} else if (length(args)==3) {
+  n = strtoi(args[1], base = 0L)
+  minP = strtoi(args[2], base = 0L)
+  maxP = strtoi(args[3], base = 0L)
+} 
 
 # Initial state as vector of x, y, k and price
 initialState <- c(x, y, k, P)
 
 # Generate matrix from initial state
-mat <- matrix(initialState, byrow = TRUE, nrow = n, ncol =4)
+mat <- matrix(initialState, byrow = TRUE, nrow = n, ncol = length(initialState))
 
 # Generate random prices
-randomPrices <- runif(n = n, min = 3000, max = 4000)
+randomPrices <- runif(n = n, min = minP, max = maxP)
 
 # Derived from Uniswap formula
-getX <- function(k,y,P) {
+getY <- function(k,y,P) {
   numerator = sqrt(k * P)
   denominator = P - y
-  x = numerator / denominator
+  y = numerator / denominator
 }
 
 fees = 0
@@ -36,15 +50,23 @@ for (r in 1:nrow(mat))
   for (c in 1:ncol(mat))
   # Skip the first line as it is the initial state
     if (r > 1) {
-      if (c == 2)
-        # Compute x based on k, y and P 
-        xReq = ( getX(mat[r-1, 3], mat[r-1, 2], randomPrices[r]))
-        mat[r, 1] = mat[r-1, 3] / xReq
-        mat[r, 2] = xReq
-        mat[r, 3] = xReq * mat[r-1, 3] / xReq
-        mat[r, 4] = randomPrices[r]
-        # Fees calculated in terms of x
-        fees = fees + (xReq * 0.003); 
+      if (c == 2) {
+          # Compute y 
+          yReq = (getY(mat[r-1, 3], mat[r-1, 2], randomPrices[r]))
+          mat[r, 1] = mat[r-1, 3] / yReq
+          mat[r, 2] = yReq
+          mat[r, 3] = yReq * mat[r-1, 3] / yReq
+          mat[r, 4] = randomPrices[r]
+          # Volume
+          if ((mat[r, 1] -  mat[r-1, 1]) > 0) {
+            volumeDAI = mat[r, 1] -  mat[r-1, 1]
+          } else {
+            volumeDAI = -1 * (mat[r, 1] - mat[r-1, 1]) 
+          }
+          print(glue::glue("Previous bal {mat[r-1, 1]} new bal {mat[r, 1]} volume {volumeDAI}"))
+          # Fees calculated in terms of x
+          fees = fees + (volumeDAI * 0.003); 
+        }
       }
 
 # Pool balances
@@ -76,15 +98,12 @@ minPrice = randomPrices[which.min(randomPrices)]
 maxPrice = randomPrices[which.max(randomPrices)]
 
 # Print impermanent loss
-glue::glue("Simulation ran over {n} trades\n\n")
+glue::glue("\n\nSimulation ran over {n} trades\n\n")
 glue::glue("Min price {minPrice} max price {maxPrice} last price {randomPrices[n]}")
 glue::glue("Current DAI balance {mat[n, 1]} ETH balance {mat[n, 2]}")
 glue::glue("DAI delta {deltaDai} ETH delta {deltaEth} ")
 glue::glue("Impermanent loss is {IL} %")
-glue::glue("Fees accrued are {fees} DAI")
-
-
-#print(mat)
+glue::glue("Fees accrued are {fees} DAI\n\n")
 
 # Plot results
 XY <- data.frame(mat)
