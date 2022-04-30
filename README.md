@@ -1,6 +1,9 @@
 # Simple AMM simulator
 
-This is a simple simulation of a constant product automated market maker created using the R language. 
+This is a simple simulation of a constant product automated market maker with impermanent loss calcuation created using the R language. There are two scripts available under the ```uniswap``` subfolder:
+
+* eth_dai_pool (Simulates a pool composed by ETH and DAI)
+* snx_eth_pool (Simulates a pool composed by SNX and ETH)
 
 Requirements:
 
@@ -16,7 +19,7 @@ The setup script will work only on Linux. To install R on Windows see the instru
 
 # Examples
 
-The program takes the following optional parameters:
+The program will run over a 5000 trades cycle by default but this can be changed optionally along with the following parameters:
 
 * number of trades (e.g. 500)
 * price range (e.g. 300 600) 
@@ -29,3 +32,5 @@ To run a ETH/DAI pool simulation with 500 trades and ETH/DAI range 3000-4000 and
 To run a SNX/ETH pool simulation with 500 trades and SNX/ETH range 200-300 and plot values:
 
 ``` npm run start_b 200 300 600 1```
+
+Plotting values will generate a pdf file.
