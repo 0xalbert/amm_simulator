@@ -25,11 +25,11 @@ The program will run over a 5000 trades cycle by default but this can be changed
 * price range (e.g. 300 600) 
 * plot values (0 or 1)
 
-To run a ETH/DAI pool simulation with 500 trades and ETH/DAI range 3000-4000 and plot values:
+To run a ETH/DAI pool simulation with 500 trades, ETH/DAI range 3000-4000 and plot values:
 
 ``` npm run start_a 500 3000 4000 1```
 
-To run a SNX/ETH pool simulation with 500 trades and SNX/ETH range 200-300 and plot values:
+To run a SNX/ETH pool simulation with 500 trades, SNX/ETH range 200-300 and plot values:
 
 ``` npm run start_b 200 300 600 1```
 
