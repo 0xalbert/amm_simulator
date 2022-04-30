@@ -45,34 +45,39 @@ getY <- function(k,y,P) {
 }
 
 fees = 0
+totalVolume = 0
 # Simulate trades
 for (r in 1:nrow(mat))   
   for (c in 1:ncol(mat))
   # Skip the first line as it is the initial state
     if (r > 1) {
       if (c == 2) {
-          # Compute y 
-          yReq = (getY(mat[r-1, 3], mat[r-1, 2], randomPrices[r]))
-          mat[r, 1] = mat[r-1, 3] / yReq
-          mat[r, 2] = yReq
-          mat[r, 3] = yReq * mat[r-1, 3] / yReq
-          mat[r, 4] = randomPrices[r]
-          # Volume
-          if ((mat[r, 1] -  mat[r-1, 1]) > 0) {
-            volumeDAI = mat[r, 1] -  mat[r-1, 1]
-          } else {
-            volumeDAI = -1 * (mat[r, 1] - mat[r-1, 1]) 
-          }
-          print(glue::glue("Previous bal {mat[r-1, 1]} new bal {mat[r, 1]} volume {volumeDAI}"))
-          # Fees calculated in terms of x
-          fees = fees + (volumeDAI * 0.003); 
+        
+        # Compute y 
+        yReq = (getY(mat[r-1, 3], mat[r-1, 2], randomPrices[r]))
+        mat[r, 1] = mat[r-1, 3] / yReq
+        mat[r, 2] = yReq
+        mat[r, 3] = yReq * mat[r-1, 3] / yReq
+        mat[r, 4] = randomPrices[r]
+        # Volume
+        if ((mat[r, 1] -  mat[r-1, 1]) > 0) {
+          volumeDAI = mat[r, 1] -  mat[r-1, 1]
+        } else {
+          volumeDAI = -1 * (mat[r, 1] - mat[r-1, 1]) 
+        }
+        print(glue::glue("Previous bal {mat[r-1, 1]} new bal {mat[r, 1]} volume {volumeDAI}"))
+        # Fees calculated in terms of x
+        fees = fees + (volumeDAI * 0.003); 
+        # Total volume
+        totalVolume = totalVolume + volumeDAI
+
         }
       }
 
 # Pool balances
-deltaDai = (mat[n, 1] + fees) - x
-if (x > (mat[n, 1] + fees)) {
-  deltaDai = x - (mat[n, 1] + fees)
+deltaDai = (mat[n, 1]) - x
+if (x > (mat[n, 1] )) {
+  deltaDai = -1 * (x - mat[n, 1] )
 }
 
 deltaEth = mat[n, 2] - y
@@ -103,7 +108,10 @@ glue::glue("Min price {minPrice} max price {maxPrice} last price {randomPrices[n
 glue::glue("Current DAI balance {mat[n, 1]} ETH balance {mat[n, 2]}")
 glue::glue("DAI delta {deltaDai} ETH delta {deltaEth} ")
 glue::glue("Impermanent loss is {IL} %")
-glue::glue("Fees accrued are {fees} DAI\n\n")
+glue::glue("Fees accrued are {fees} DAI total volume {totalVolume}\n\n")
+
+timeSeries = ts(data = randomPrices, start = 1, end = n, frequency = 1,  deltat = 1, names = )
+matplot(timeSeries, type = "l")
 
 # Plot results
 XY <- data.frame(mat)
