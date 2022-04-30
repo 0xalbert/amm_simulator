@@ -4,6 +4,7 @@
   "description": "",
   "main": "index.js",
   "scripts": {
+    "install": "sh ./install.sh",
     "start_a": "./uniswap/eth_dai_pool.r",
     "start_b": "./uniswap/snx_eth_pool.r",
     "test": "echo \"Error: no test specified\" && exit 1"
