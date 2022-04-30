@@ -8,12 +8,22 @@ R - [How to install R on Windows and Linux](https://techvidvan.com/tutorials/ins
 
 Glue [CRAN](https://cran.r-project.org/web/packages/glue/index.html)
 
+# Setup
+
+``` npm run install ```
+
 # Examples
 
-To run a ETH/DAI pool simulation:
+The program takes the following optional parameters:
 
-``` npm run start_a "number_of_trades" ```
+* number of trades (e.g. 500)
+* price range (e.g. 300 600) 
+* plot values (0 or 1)
 
-To run a SNX/ETH pool simulation:
+To run a ETH/DAI pool simulation with 500 trades and ETH/DAI range 3000-4000 and plot values:
 
-``` npm run start_b "number_of_trades" ```
+``` npm run start_a 500 3000 4000 1```
+
+To run a SNX/ETH pool simulation with 500 trades and SNX/ETH range 200-300 and plot values:
+
+``` npm run start_b 200 300 600 1```
