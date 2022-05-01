@@ -19,11 +19,11 @@ The setup script will work only on Linux. To install R on Windows see the instru
 
 # Examples
 
-The program will run over a 5000 trades cycle by default but this can be changed optionally along with the following parameters:
+The program will run with hardcoded default parameters which can be changed as follows:
 
 * number of trades (e.g. 500)
-* price range (e.g. 300 600) 
-* plot values (0 or 1)
+* price range (e.g. 3000 4000)
+* plot values (1 or 0)
 
 To run a ETH/DAI pool simulation with 500 trades, ETH/DAI range 3000-4000 and plot values:
 
