@@ -1,6 +1,7 @@
 #!/usr/bin/env Rscript
 path = getwd()
-source(glue::glue("{path}/utils/install_cran.r"))
+source(paste(path, "/utils/install_cran.r", sep=""))
+source(paste(path, "/utils/rng.r", sep=""))
 
 # Simulator of constant product AMM (Uniswap V1/V2) 
 # Formulas: 
@@ -36,9 +37,6 @@ initialState <- c(x, y, k, P)
 
 # Generate matrix from initial state
 mat <- matrix(initialState, byrow = TRUE, nrow = n, ncol = length(initialState))
-
-# Generate random prices
-randomPrices <- runif(n = n, min = minP, max = maxP)
 
 # Derived from Uniswap formula
 getY <- function(k,y,P) {
