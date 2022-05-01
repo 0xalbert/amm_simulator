@@ -2,8 +2,8 @@
 
 This is a simple simulation of a constant product automated market maker with impermanent loss calculation created using the [R language](https://www.r-project.org/). There are two scripts available under the [```uniswap```](https://github.com/0xalbert/amm_simulator/tree/master/uniswap) subfolder:
 
-* eth_dai_pool (Simulates a pool composed by ETH and DAI)
-* snx_eth_pool (Simulates a pool composed by SNX and ETH)
+* eth_dai_pool (Simulates a pool composed of ETH and DAI)
+* snx_eth_pool (Simulates a pool composed of SNX and ETH)
 
 # Requirements:
 
