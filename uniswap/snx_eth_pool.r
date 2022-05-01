@@ -9,13 +9,13 @@ args = commandArgs(trailingOnly=TRUE)
 
 # Initial system variables
 x = 10000       # Initial SNX liquidity
-y = 38.35          # Initial ETH liquidity
+y = 38.35       # Initial ETH liquidity
 k = x * y       # k as per Uniswap formula
 P = x / y       # Initial price of y in terms of x
 n = 5000        # Number of trades simulated
 yReq = 0;       # Computed y required to meet k
-minP = 260     # Default minimum price
-maxP = 390     # Default maximum price
+minP = 260      # Default minimum price
+maxP = 390      # Default maximum price
 volumeSNX = 0   # Volume of DAI traded
 plot = 0;
 
@@ -28,7 +28,7 @@ if (length(args)==1) {
   plot = strtoi(args[4], base = 0L)
 } 
 
-# Initial state as vector of x, y, k and price
+# Initial state as vector of x, y, k and initial price P
 initialState <- c(x, y, k, P)
 
 # Generate matrix from initial state

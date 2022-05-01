@@ -28,7 +28,7 @@ if (length(args)==1) {
   plot = strtoi(args[4], base = 0L)
 } 
 
-# Initial state as vector of x, y, k and price
+# Initial state as vector of x, y, k and initial price P
 initialState <- c(x, y, k, P)
 
 # Generate matrix from initial state
