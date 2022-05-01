@@ -27,7 +27,6 @@ getx <- function(L, P, Pb) {
 
 gety <- function(L, P, Pa) {
   yNew = (sqrt(P) - sqrt(Pa))
-  print(glue::glue("Got L {L} yNew {yNew}"))
   yNew = yNew * L
 }
 
@@ -92,13 +91,13 @@ for (r in 1:nrow(mat))
         currentPrice = mat[r-1, 4]
       }
 
-      randomPrice = randomPrices[r]
       Lx = getLiqX(mat[r-1, 1], currentPrice, maxP)
       Ly = getLiqY(mat[r-1, 2], currentPrice, Pa)
 
       liq = c(Lx, Ly)
       L = liq[which.min(liq)]
  
+      randomPrice = randomPrices[r]
       xNew = getx(L, randomPrice, maxP)
       yNew = gety(L, randomPrice, Pa)
  
@@ -109,6 +108,7 @@ for (r in 1:nrow(mat))
     }
   }
 
+#print(mat)
 # Pool balances
 deltaDai = (mat[n, 1]) - x
 if (x > (mat[n, 1] )) {
