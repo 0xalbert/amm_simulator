@@ -1,5 +1,6 @@
 #!/usr/bin/env Rscript
-library(glue)
+path = getwd()
+source(glue::glue("{path}/utils/install_cran.r"))
 
 # Simulator of constant product AMM (Uniswap V1/V2) 
 # Formulas: 

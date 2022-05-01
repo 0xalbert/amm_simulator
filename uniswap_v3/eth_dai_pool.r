@@ -1,6 +1,6 @@
 #!/usr/bin/env Rscript
-library(glue)
-
+path = getwd()
+source(glue::glue("{path}/utils/install_cran.r"))
 
 getLiqX <- function(x, P, Pb) {
   numerator = sqrt(P) * sqrt(Pb)
