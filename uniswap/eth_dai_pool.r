@@ -1,6 +1,5 @@
 #!/usr/bin/env Rscript
 library(glue)
-args = commandArgs(trailingOnly=TRUE)
 
 # Simulator of constant product AMM (Uniswap V1/V2) 
 # Formulas: 
@@ -18,6 +17,9 @@ minP = 3000     # Default minimum price
 maxP = 4000     # Default maximum price
 volumeDAI = 0   # Volume of DAI traded
 plot = FALSE
+
+# Command line arguments
+args = commandArgs(trailingOnly=TRUE)
 
 if (length(args)==1) {
   n = strtoi(args[1], base = 0L)
