@@ -71,7 +71,6 @@ mat <- matrix(initialState, byrow = TRUE, nrow = n, ncol = length(initialState))
 # Generate random prices
 randomPrices <- runif(n = n, min = minP, max = maxP)
 
-
 fees = 0
 totalVolume = 0
 
@@ -86,9 +85,7 @@ for (r in 1:nrow(mat))
     mat[r, 4] = P
     Pa = getPa(mat[r, 1], mat[r, 2], P, maxP)
   } else {  
-    
     if (c == 2) {
-      
       if (r == 2) {
         currentPrice = P
       } else {
@@ -96,7 +93,6 @@ for (r in 1:nrow(mat))
       }
 
       randomPrice = randomPrices[r]
-
       Lx = getLiqX(mat[r-1, 1], currentPrice, maxP)
       Ly = getLiqY(mat[r-1, 2], currentPrice, Pa)
 
@@ -110,12 +106,9 @@ for (r in 1:nrow(mat))
       mat[r, 2] = yNew
       mat[r, 3] = x * y
       mat[r, 4] = randomPrice      
-
     }
-
   }
 
-print(mat)
 # Pool balances
 deltaDai = (mat[n, 1]) - x
 if (x > (mat[n, 1] )) {
