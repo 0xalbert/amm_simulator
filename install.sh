@@ -4,4 +4,5 @@ sudo apt-key adv --keyserver keyserver.ubuntu.com --recv-keys E298A3A825C0D65DFD
 sudo add-apt-repository 'deb https://cloud.r-project.org/bin/linux/ubuntu focal-cran40/'
 sudo apt install r-base
 
-chmod +x uniswap/*.r
+chmod +x uniswap_v2/*.r
+chmod +x uniswap_v3/*.r
