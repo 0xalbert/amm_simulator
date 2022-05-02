@@ -36,16 +36,17 @@ gety <- function(L, P, Pa) {
 # https://atiselsts.github.io/pdfs/uniswap-v3-liquidity-math.pdf
 
 # Initial system variables
-x = 2           # Initial ETH liquidity
-y = 4000        # Initial DAI liquidity
-k = x * y       # k as per Uniswap formula
-P = y / x       # Initial price of y in terms of x
-n = 5000        # Number of trades simulated
-yReq = 0        # Computed y required to meet k
-minP = 2000     # Default minimum price
-maxP = 3000     # Default maximum price
-volumeDAI = 0   # Volume of DAI traded
-plot = FALSE
+x = 2            # Initial ETH liquidity
+y = 4000         # Initial DAI liquidity
+k = x * y        # k as per Uniswap formula
+P = y / x        # Initial price of y in terms of x
+n = 5000         # Number of trades simulated
+yReq = 0         # Computed y required to meet k
+minP = 2000      # Default minimum price
+maxP = 3000      # Default maximum price
+volumeDAI = 0    # Volume of DAI traded
+feeRate = 0.003  # Fee rate
+plot = FALSE     # Plot results
 
 # Command line arguments
 args = commandArgs(trailingOnly=TRUE)
@@ -73,25 +74,33 @@ for (r in 1:nrow(mat))
   for (c in 1:ncol(mat))
   # initial state
   if (r == 1) {
+
     mat[r, 1] = x
     mat[r, 2] = y
     mat[r, 3] = x * y
     mat[r, 4] = P
+
     Pa = getPa(mat[r, 1], mat[r, 2], P, maxP)
-  } else {  
+    
+  } else { 
+    # Do no repeat computation
     if (c == 2) {
+      # initialize Price
       if (r == 2) {
         currentPrice = P
       } else {
         currentPrice = mat[r-1, 4]
       }
 
+      # Compute liquidity
       Lx = getLiqX(mat[r-1, 1], currentPrice, maxP)
       Ly = getLiqY(mat[r-1, 2], currentPrice, Pa)
 
+      # Compute minimum 
       liq = c(Lx, Ly)
       L = liq[which.min(liq)]
  
+      # Compute neew x and y
       randomPrice = randomPrices[r]
       xNew = getx(L, randomPrice, maxP)
       yNew = gety(L, randomPrice, Pa)
@@ -99,11 +108,25 @@ for (r in 1:nrow(mat))
       mat[r, 1] = xNew
       mat[r, 2] = yNew
       mat[r, 3] = x * y
-      mat[r, 4] = randomPrice      
+      mat[r, 4] = randomPrice    
+
+      # Volume
+      if ((mat[r, 2] -  mat[r-1, 2]) > 0) {
+        volumeDAI = mat[r, 2] -  mat[r-1, 2]
+      } else {
+        volumeDAI = -1 * (mat[r, 2] - mat[r-1, 2]) 
+      }
+
+      # Fees calculated in terms of y
+      fees = fees + (volumeDAI * feeRate); 
+      # Total volume
+      totalVolume = totalVolume + volumeDAI
+  
     }
   }
 
 #print(mat)
+
 # Pool balances
 deltaDai = (mat[n, 1]) - x
 if (x > (mat[n, 1] )) {
@@ -123,7 +146,11 @@ V0 = (x * randomPrices[n]) + (y * 1)
 V1 = (mat[n, 1] * randomPrices[n]) + (mat[n, 2] * 1) 
 
 # IL as delta in portfolio value
-IL = (V1 - V0)
+if (V0 > V1) {
+  IL = (V0 - V1)
+} else {
+  IL = 0
+}
 
 # IL as percentage loss
 IL = (IL / V0) * 100
@@ -143,12 +170,13 @@ glue::glue("Original position value {V0} Current position value {V1}")
 
 glue::glue("Fees accrued are {fees} DAI total volume {totalVolume}\n\n")
 
-timeSeries = ts(data = randomPrices, start = 1, end = n, frequency = 1,  deltat = 1, names = )
-matplot(timeSeries, type = "l")
-
+# Plot results
 if (plot) {
-  # Plot results
   XY <- data.frame(mat)
+  
+  timeSeries = ts(data = randomPrices, start = 1, end = n, frequency = 1,  deltat = 1, names = )
+
+  matplot(timeSeries, type = "l")
 
   matplot(XY[,c(1)], XY[,c(4)], type = "p", lty = 1, col = c("red", "green"), pch = 1,
           xlab = "DAI in pool", ylab = "ETH price")

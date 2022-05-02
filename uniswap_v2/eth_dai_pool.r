@@ -9,15 +9,16 @@ source(paste(path, "/utils/rng.r", sep=""))
 # Original whitepaper https://hackmd.io/@HaydenAdams/HJ9jLsfTz
 
 # Initial system variables
-x = 60000       # Initial DAI liquidity
-y = 20          # Initial ETH liquidity
-k = x * y       # k as per Uniswap formula
-P = x / y       # Initial price of y in terms of x
-n = 5000        # Number of trades simulated
-yReq = 0;       # Computed y required to meet k
-minP = 3000     # Default minimum price
-maxP = 4000     # Default maximum price
-volumeDAI = 0   # Volume of DAI traded
+x = 60000        # Initial DAI liquidity
+y = 20           # Initial ETH liquidity
+k = x * y        # k as per Uniswap formula
+P = x / y        # Initial price of y in terms of x
+n = 5000         # Number of trades simulated
+yReq = 0;        # Computed y required to meet k
+minP = 3000      # Default minimum price
+maxP = 4000      # Default maximum price
+volumeDAI = 0    # Volume of DAI traded
+feeRate = 0.003  # Fee rate
 plot = FALSE
 
 # Command line arguments
@@ -60,15 +61,16 @@ for (r in 1:nrow(mat))
         mat[r, 2] = yReq
         mat[r, 3] = yReq * mat[r-1, 3] / yReq
         mat[r, 4] = randomPrices[r]
+
         # Volume
         if ((mat[r, 1] -  mat[r-1, 1]) > 0) {
           volumeDAI = mat[r, 1] -  mat[r-1, 1]
         } else {
           volumeDAI = -1 * (mat[r, 1] - mat[r-1, 1]) 
         }
-        #print(glue::glue("Previous bal {mat[r-1, 1]} new bal {mat[r, 1]} volume {volumeDAI}"))
+
         # Fees calculated in terms of x
-        fees = fees + (volumeDAI * 0.003); 
+        fees = fees + (volumeDAI * feeRate); 
         # Total volume
         totalVolume = totalVolume + volumeDAI
 
@@ -94,7 +96,11 @@ V0 = (x * 1) + (y * randomPrices[n])
 V1 = (mat[n, 1] * 1) + (mat[n, 2] * randomPrices[n]) 
 
 # IL as delta in portfolio value
-IL = (V0 - V1)
+if (V0 > V1) {
+  IL = (V0 - V1)
+} else {
+  IL = 0
+}
 
 # IL as percentage loss
 IL = (IL / V0) * 100
