@@ -72,6 +72,7 @@ totalVolume = 0
 # Simulate trades
 for (r in 1:nrow(mat))   
   for (c in 1:ncol(mat))
+
   # initial state
   if (r == 1) {
 
@@ -83,6 +84,7 @@ for (r in 1:nrow(mat))
     Pa = getPa(mat[r, 1], mat[r, 2], P, maxP)
     
   } else { 
+    
     # Do no repeat computation
     if (c == 2) {
       # initialize Price

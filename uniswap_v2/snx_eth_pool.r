@@ -48,9 +48,11 @@ getY <- function(k,y,P) {
 
 fees = 0
 totalVolume = 0
+
 # Simulate trades
 for (r in 1:nrow(mat))   
   for (c in 1:ncol(mat))
+  
   # Skip the first line as it is the initial state
     if (r > 1) {
       if (c == 2) {
@@ -129,11 +131,11 @@ glue::glue("Impermanent loss is {IL} %")
 glue::glue("Fees accrued are {fees} SNX (${fees*randomPricesB[n]})")
 glue::glue("Total volume {totalVolume} SNX (${totalVolume * randomPricesB[n]})\n\n")
 
-timeSeries = ts(data = randomPricesA, start = 1, end = n, frequency = 1,  deltat = 1, names = )
-matplot(timeSeries, type = "l")
-
+ # Plot results
 if (plot) {
-  # Plot results
+  timeSeries = ts(data = randomPricesA, start = 1, end = n, frequency = 1,  deltat = 1, names = )
+  matplot(timeSeries, type = "l")
+
   XY <- data.frame(mat)
 
   matplot(XY[,c(1)], XY[,c(4)], type = "p", lty = 1, col = c("red", "green"), pch = 1,
