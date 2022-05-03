@@ -102,7 +102,7 @@ for (r in 1:nrow(mat))
       liq = c(Lx, Ly)
       L = liq[which.min(liq)]
  
-      # Compute neew x and y
+      # Compute new x and y
       randomPrice = randomPrices[r]
       xNew = getx(L, randomPrice, maxP)
       yNew = gety(L, randomPrice, Pa)
